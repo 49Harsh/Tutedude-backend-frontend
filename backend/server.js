@@ -18,10 +18,23 @@ mongoose.connect(process.env.MONGODB_URI)
 
 // User model
 const UserSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  friendRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+  username: { 
+    type: String, 
+    required: true, 
+    unique: true 
+},
+  password: { 
+    type: String, 
+    required: true 
+},
+  friends: [{ 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'User' 
+}],
+  friendRequests: [{
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'User' 
+}]
 });
 
 const User = mongoose.model('User', UserSchema);
@@ -122,6 +135,26 @@ app.get('/friends', auth, async (req, res) => {
     res.status(500).send(error);
   }
 });
+
+app.get('/friend-requests', auth, async (req, res) => {
+    try {
+      const user = await User.findById(req.user._id).populate('friendRequests', 'username');
+      res.send(user.friendRequests);
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  });
+  
+  app.post('/reject-friend', auth, async (req, res) => {
+    try {
+      const { friendId } = req.body;
+      req.user.friendRequests = req.user.friendRequests.filter(id => id.toString() !== friendId);
+      await req.user.save();
+      res.send('Friend request rejected');
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  });
 
 app.get('/friend-recommendations', auth, async (req, res) => {
   try {
