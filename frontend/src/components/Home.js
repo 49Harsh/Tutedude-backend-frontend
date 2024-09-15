@@ -28,7 +28,7 @@ function Home() {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('/users', {
+      const response = await axios.get('/api/users/', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUsers(response.data);
@@ -39,7 +39,7 @@ function Home() {
 
   const fetchFriends = async () => {
     try {
-      const response = await axios.get('/friends', {
+      const response = await axios.get('/api/users/friends', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setFriends(response.data);
@@ -50,7 +50,7 @@ function Home() {
 
   const fetchFriendRequests = async () => {
     try {
-      const response = await axios.get('/friend-requests', {
+      const response = await axios.get('/api/users/friend-requests', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setFriendRequests(response.data);
@@ -61,7 +61,7 @@ function Home() {
 
   const fetchRecommendations = async () => {
     try {
-      const response = await axios.get('/friend-recommendations', {
+      const response = await axios.get('/api/users/friend-recommendations', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setRecommendations(response.data);
@@ -72,7 +72,7 @@ function Home() {
 
   const sendFriendRequest = async (friendId) => {
     try {
-      await axios.post('/friend-request', { friendId }, {
+      await axios.post('/api/users/friend-request', { friendId }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       alert('Friend request sent!');
@@ -83,7 +83,7 @@ function Home() {
 
   const acceptFriendRequest = async (friendId) => {
     try {
-      await axios.post('/accept-friend', { friendId }, {
+      await axios.post('/api/users/accept-friend', { friendId }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchFriends();
@@ -95,7 +95,7 @@ function Home() {
 
   const rejectFriendRequest = async (friendId) => {
     try {
-      await axios.post('/reject-friend', { friendId }, {
+      await axios.post('/api/users/reject-friend', { friendId }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchFriendRequests();
