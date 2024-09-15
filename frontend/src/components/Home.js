@@ -1,5 +1,4 @@
-// src/components/Home.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import axios from '../api/axios';
@@ -15,6 +14,50 @@ function Home() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const fetchUsers = useCallback(async () => {
+    try {
+      const response = await axios.get('/api/users/', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setUsers(response.data);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  }, [token]);
+
+  const fetchFriends = useCallback(async () => {
+    try {
+      const response = await axios.get('/api/users/friends', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setFriends(response.data);
+    } catch (error) {
+      console.error('Error fetching friends:', error);
+    }
+  }, [token]);
+
+  const fetchFriendRequests = useCallback(async () => {
+    try {
+      const response = await axios.get('/api/users/friend-requests', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setFriendRequests(response.data);
+    } catch (error) {
+      console.error('Error fetching friend requests:', error);
+    }
+  }, [token]);
+
+  const fetchRecommendations = useCallback(async () => {
+    try {
+      const response = await axios.get('/api/users/friend-recommendations', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setRecommendations(response.data);
+    } catch (error) {
+      console.error('Error fetching recommendations:', error);
+    }
+  }, [token]);
+
   useEffect(() => {
     if (!token) {
       navigate('/login');
@@ -24,51 +67,7 @@ function Home() {
       fetchFriendRequests();
       fetchRecommendations();
     }
-  }, [token, navigate]);
-
-  const fetchUsers = async () => {
-    try {
-      const response = await axios.get('/api/users/', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setUsers(response.data);
-    } catch (error) {
-      console.error('Error fetching users:', error);
-    }
-  };
-
-  const fetchFriends = async () => {
-    try {
-      const response = await axios.get('/api/users/friends', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setFriends(response.data);
-    } catch (error) {
-      console.error('Error fetching friends:', error);
-    }
-  };
-
-  const fetchFriendRequests = async () => {
-    try {
-      const response = await axios.get('/api/users/friend-requests', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setFriendRequests(response.data);
-    } catch (error) {
-      console.error('Error fetching friend requests:', error);
-    }
-  };
-
-  const fetchRecommendations = async () => {
-    try {
-      const response = await axios.get('/api/users/friend-recommendations', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setRecommendations(response.data);
-    } catch (error) {
-      console.error('Error fetching recommendations:', error);
-    }
-  };
+  }, [token, navigate, fetchUsers, fetchFriends, fetchFriendRequests, fetchRecommendations]);
 
   const sendFriendRequest = async (friendId) => {
     try {
